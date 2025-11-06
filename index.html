@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #cacaca; -webkit-text-stroke: #cacaca}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #cacaca; -webkit-text-stroke: #cacaca; min-height: 16.0px}
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #6d7378; -webkit-text-stroke: #6d7378}
+    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #c27e65; -webkit-text-stroke: #c27e65}
+    span.s1 {font-kerning: none; background-color: #171818}
+    span.s2 {font-kerning: none}
+    span.s3 {font-kerning: none; color: #cacaca; background-color: #171818; -webkit-text-stroke: 0px #cacaca}
+    span.s4 {font-kerning: none; color: #6d6d6d; background-color: #171818; -webkit-text-stroke: 0px #6d6d6d}
+    span.s5 {font-kerning: none; color: #4689cc; background-color: #171818; -webkit-text-stroke: 0px #4689cc}
+    span.s6 {font-kerning: none; color: #8cd3fe; background-color: #171818; -webkit-text-stroke: 0px #8cd3fe}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html lang="ja"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;title&gt;そなたのソナタ&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;style&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>body {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-family: "Inter", sans-serif;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>scroll-behavior: smooth;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/* 選択中のボタンスタイル (通常のCSS) */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.track-button.selected {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #D3C34A; /* 黄色 */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #1B2A5C;<span class="Apple-converted-space">            </span>/* 濃い青文字 */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border: 4px solid #fde68a; /* ring-yellow-200 の代わり */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: bold;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding-top: 1rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding-bottom: 1rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding-left: 0.5rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding-right: 0.5rem;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;!-- 背景を #717071 (グレー) に変更 --&gt;</span></p>
+<p class="p1"><span class="s1">&lt;body class="bg-[#717071] flex items-center justify-center min-h-screen p-4"&gt;</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- カードの背景色を #1B2A5C (濃い青) に変更 --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="w-full max-w-2xl bg-[#1B2A5C] rounded-lg shadow-xl p-6"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;!-- タイトルの文字色を #D3C34A (黄色) に変更 --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h1 class="text-2xl font-bold text-center text-[#D3C34A] mb-6"&gt;そなたのソナタ&lt;/h1&gt;</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p3"><span class="s3"><span class="Apple-converted-space">        </span></span><span class="s1">&lt;!-- トラック選択ボタン --&gt;</span></p>
+<p class="p4"><span class="s3"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;</span><span class="s5">div</span><span class="s3"> </span><span class="s6">id</span><span class="s4">=</span><span class="s1">"button-container"</span><span class="s3"> </span><span class="s6">class</span><span class="s4">=</span><span class="s1">"grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-6 w-full"</span><span class="s4">&gt;</span></p>
+<p class="p4"><span class="s3"><span class="Apple-converted-space">            </span></span><span class="s4">&lt;</span><span class="s5">template</span><span class="s3"> </span><span class="s6">id</span><span class="s4">=</span><span class="s1">"track-button-template"</span><span class="s4">&gt;</span></p>
+<p class="p3"><span class="s3"><span class="Apple-converted-space">                </span></span><span class="s1">&lt;!-- Trackボタン: 白背景(bg-white)、青文字(text-[#1B2A5C]) --&gt;</span></p>
+<p class="p4"><span class="s3"><span class="Apple-converted-space">                </span></span><span class="s4">&lt;</span><span class="s5">button</span><span class="s3"> </span><span class="s6">class</span><span class="s4">=</span><span class="s1">"track-button text-[#1B2A5C] font-bold py-4 px-2 rounded-lg bg-white hover:bg-gray-100 transition-all duration-200 shadow-md text-sm border-4 border-transparent"</span><span class="s4">&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>Track</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s4">&lt;/</span><span class="s5">button</span><span class="s4">&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s4">&lt;/</span><span class="s5">template</span><span class="s4">&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;/</span><span class="s5">div</span><span class="s4">&gt;</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p3"><span class="s3"><span class="Apple-converted-space">        </span></span><span class="s1">&lt;!-- 操作ボタン --&gt;</span></p>
+<p class="p4"><span class="s3"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;</span><span class="s5">div</span><span class="s3"> </span><span class="s6">class</span><span class="s4">=</span><span class="s1">"flex space-x-4"</span><span class="s4">&gt;</span></p>
+<p class="p4"><span class="s3"><span class="Apple-converted-space">            </span></span><span class="s4">&lt;</span><span class="s5">button</span><span class="s3"> </span><span class="s6">id</span><span class="s4">=</span><span class="s1">"play-button"</span><span class="s3"> </span><span class="s6">class</span><span class="s4">=</span><span class="s1">"flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-lg text-lg shadow-lg transition duration-300"</span><span class="s4">&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>再生</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s4">&lt;/</span><span class="s5">button</span><span class="s4">&gt;</span></p>
+<p class="p4"><span class="s3"><span class="Apple-converted-space">            </span></span><span class="s4">&lt;</span><span class="s5">button</span><span class="s3"> </span><span class="s6">id</span><span class="s4">=</span><span class="s1">"stop-button"</span><span class="s3"> </span><span class="s6">class</span><span class="s4">=</span><span class="s1">"flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-6 rounded-lg text-lg shadow-lg transition duration-300"</span><span class="s4">&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>停止</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s4">&lt;/</span><span class="s5">button</span><span class="s4">&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;/</span><span class="s5">div</span><span class="s4">&gt;</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p3"><span class="s3"><span class="Apple-converted-space">        </span></span><span class="s1">&lt;!-- ステータス表示 (明るいグレー) --&gt;</span></p>
+<p class="p4"><span class="s3"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;</span><span class="s5">div</span><span class="s3"> </span><span class="s6">id</span><span class="s4">=</span><span class="s1">"status"</span><span class="s3"> </span><span class="s6">class</span><span class="s4">=</span><span class="s1">"text-center text-gray-300 mt-4 h-6"</span><span class="s4">&gt;&lt;/</span><span class="s5">div</span><span class="s4">&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span></span><span class="s4">&lt;/</span><span class="s5">div</span><span class="s4">&gt;</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// --- ▼ 音源設定 (GitHub Pagesアップロード用) ▼ ---</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// !【重要】このファイルは GitHub Pages にアップロードするためのものです。</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// ! このまま「プレビュー」しても "ファイルが見つからない" というエラーになりますが、</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// ! これは正常な動作です。</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// !【警告】 'a.m4a' などの .m4a 形式のファイルは、多くのブラウザで再生エラーになります。</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// ! もし GitHub Pages で音が鳴らない場合は、</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// ! 必ず音源を .mp3 形式に変換し、ここのファイル名も "a.mp3" などに修正してください。</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// !【修正】 .m4a ではなく、 .mp3 形式を使うことを強く推奨します。</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// ! ガイドに従って .mp3 に変換したファイル名に書き換えてあります。</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// 再生開始時に鳴る音</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const A_URL = "a.mp3";</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// 再生終了時に鳴る音</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const B_URL = "b.mp3";</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// 選択する10種類の音トラック</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const TRACK_URLS = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"a.mp3",<span class="Apple-converted-space">      </span>// Track 1</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"b.mp3",<span class="Apple-converted-space">      </span>// Track 2</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"track3.mp3", // Track 3</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"track4.mp3", // Track 4</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"track5.mp3", // Track 5</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"track6.mp3", // Track 6</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"track7.mp3", // Track 7</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"track8.mp3", // Track 8</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"track9.mp3", // Track 9</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"track10.mp3" // Track 10</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// --- ▲ 音源設定 ▲ ---</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// Audioオブジェクトのインスタンス (使い回します)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const audioA = new Audio();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const audioB = new Audio();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const audioMain = new Audio();</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>let currentSequence = []; // 再生シーケンスのキュー</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>let currentAudio = null; // 現在再生中のAudioオブジェクト</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// DOM要素</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const buttonContainer = document.getElementById('button-container');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const playButton = document.getElementById('play-button');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const stopButton = document.getElementById('stop-button');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const statusEl = document.getElementById('status');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const template = document.getElementById('track-button-template');</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>let selectedTrackIndex = 0; // デフォルトでTrack 1 (インデックス 0) を選択</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>let trackButtons = []; // ボタンの参照を保持する配列</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// --- 初期化 ---</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// トラックボタンを生成</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>TRACK_URLS.forEach((url, index) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const clone = template.content.cloneNode(true);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const button = clone.querySelector('.track-button');</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>button.textContent = `Track ${index + 1}`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>button.dataset.index = index;<span class="Apple-converted-space"> </span></span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>button.addEventListener('click', () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>selectTrack(index);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>});</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>buttonContainer.appendChild(clone);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>trackButtons.push(button);<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>});</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// トラック選択処理</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function selectTrack(index) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// ★診断用ログ★</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.log(`selectTrack called for index: ${index}`);<span class="Apple-converted-space"> </span></span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>selectedTrackIndex = index;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>trackButtons.forEach((btn, i) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>// 'selected' クラス (黄色の背景) の付け外し</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>btn.classList.toggle('selected', i === index);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>console.log(`Track ${index + 1} selected`);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// 起動時にデフォルト（Track 1）を選択状態にする</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>selectTrack(0);</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>// --- 再生ロジック ---</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>playButton.addEventListener('click', playSequence);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>stopButton.addEventListener('click', stopAllAudio);</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function playSequence() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>stopAllAudio();<span class="Apple-converted-space"> </span></span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>currentSequence = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{ audio: audioA, url: A_URL, name: "A" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{ audio: audioMain, url: TRACK_URLS[selectedTrackIndex], name: "Main" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{ audio: audioB, url: B_URL, name: "B" }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>];</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>playNextInSequence();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s2"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function playNextInSequence</span></p>
+</body>
+</html>
