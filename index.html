@@ -32,8 +32,10 @@
         <!-- タイトルの文字色を #D3C34A (黄色) に変更 -->
         <h1 class="text-2xl font-bold text-center text-[#D3C34A] mb-6">そなたのソナタ</h1>
 
-        <!-- トラック選択ボタン -->
-        <div id="button-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-6 w-full">
+        <!-- トラック選択ボタン (8曲用にレイアウト変更) -->
+        <!-- sm:grid-cols-3 (3列) -> 変更なし -->
+        <!-- md:grid-cols-5 (5列) -> md:grid-cols-4 (4列) に変更 -->
+        <div id="button-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6 w-full">
             <template id="track-button-template">
                 <!-- Trackボタン: 白背景(bg-white)、青文字(text-[#1B2A5C]) -->
                 <button class="track-button text-[#1B2A5C] font-bold py-4 px-2 rounded-lg bg-white hover:bg-gray-100 transition-all duration-200 shadow-md text-sm border-4 border-transparent">
@@ -65,29 +67,25 @@
         
         // !【警告】 'a.m4a' などの .m4a 形式のファイルは、多くのブラウザで再生エラーになります。
         // ! もし GitHub Pages で音が鳴らない場合は、
-        // ! 必ず音源を .mp3 形式に変換し、ここのファイル名も "a.mp3" などに修正してください。
-        
-        // !【修正】 .m4a ではなく、 .mp3 形式を使うことを強く推奨します。
-        // ! ガイドに従って .mp3 に変換したファイル名に書き換えてあります。
+        // ! 必ず音源を .mp3 形式または .wav 形式に変換し、
+        // ! ここのファイル名も "a.mp3" や "a.wav" などに修正してください。
 
-        // 再生開始時に鳴る音
-        const A_URL = "a.mp3";
+        // 再生開始時に鳴る音 (i.wav に変更)
+        const A_URL = "i.wav";
 
-        // 再生終了時に鳴る音
-        const B_URL = "b.mp3";
+        // 再生終了時に鳴る音 (i.wav に変更)
+        const B_URL = "i.wav";
 
-        // 選択する10種類の音トラック
+        // 選択する8種類の音トラック (8曲に変更, .wav に変更)
         const TRACK_URLS = [
-            "a.mp3",      // Track 1
-            "b.mp3",      // Track 2
-            "track3.mp3", // Track 3
-            "track4.mp3", // Track 4
-            "track5.mp3", // Track 5
-            "track6.mp3", // Track 6
-            "track7.mp3", // Track 7
-            "track8.mp3", // Track 8
-            "track9.mp3", // Track 9
-            "track10.mp3" // Track 10
+            "a.wav", // Track 1
+            "b.wav", // Track 2
+            "c.wav", // Track 3
+            "d.wav", // Track 4
+            "e.wav", // Track 5
+            "f.wav", // Track 6
+            "g.wav", // Track 7
+            "h.wav"  // Track 8
         ];
         // --- ▲ 音源設定 ▲ ---
 
@@ -95,10 +93,12 @@
         // Audioオブジェクトのインスタンス (使い回します)
         const audioA = new Audio();
         const audioB = new Audio();
-        const audioMain = new Audio();
+        const audioMain = new Audio(); // シーケンス再生用
+        const audioPreview = new Audio(); // プレビュー再生専用
         
         let currentSequence = []; // 再生シーケンスのキュー
-        let currentAudio = null; // 現在再生中のAudioオブジェクト
+        let currentPlayingAudio = null; // 現在再生中のAudioオブジェクト (シーケンス用)
+        let currentPreviewAudio = null; // 現在プレビュー中のAudioオブジェクト
 
         // DOM要素
         const buttonContainer = document.getElementById('button-container');
@@ -121,41 +121,83 @@
             button.dataset.index = index; 
 
             button.addEventListener('click', () => {
-                selectTrack(index);
+                // トラックボタンクリックでプレビュー再生
+                playPreview(index);
             });
 
             buttonContainer.appendChild(clone);
             trackButtons.push(button); 
         });
 
-        // トラック選択処理
-        function selectTrack(index) {
-            // ★診断用ログ★
-            console.log(`selectTrack called for index: ${index}`); 
-            
+        // トラックの選択状態（色）だけを更新する
+        function updateButtonSelection(index) {
             selectedTrackIndex = index;
             trackButtons.forEach((btn, i) => {
                 // 'selected' クラス (黄色の背景) の付け外し
                 btn.classList.toggle('selected', i === index);
             });
-            console.log(`Track ${index + 1} selected`);
         }
+        
+        // 起動時にデフォルト（Track 1）を選択状態にする (音は鳴らさない)
+        updateButtonSelection(0);
 
-        // 起動時にデフォルト（Track 1）を選択状態にする
-        selectTrack(0);
 
         // --- 再生ロジック ---
 
         playButton.addEventListener('click', playSequence);
         stopButton.addEventListener('click', stopAllAudio);
 
+        // トラックボタン（プレビュー）のロジック
+        function playPreview(index) {
+            // まずは選択状態（色）を更新
+            updateButtonSelection(index);
+
+            // もし同じトラックがすでにプレビュー再生中なら、停止する
+            if (currentPreviewAudio && currentPreviewAudio.dataset.index == index && !currentPreviewAudio.paused) {
+                currentPreviewAudio.pause();
+                currentPreviewAudio.currentTime = 0;
+                currentPreviewAudio = null;
+                statusEl.textContent = `Track ${index + 1} プレビュー停止`;
+                return;
+            }
+
+            // 他の音（シーケンスまたはプレビュー）をすべて停止
+            stopAllAudio(true); // true = プレビュー停止中であることを示す
+
+            const url = TRACK_URLS[index];
+            currentPreviewAudio = audioPreview; // プレビュー用のAudioオブジェクトを使用
+            currentPreviewAudio.src = url;
+            currentPreviewAudio.dataset.index = index; // どのトラックか記録
+
+            currentPreviewAudio.removeEventListener('ended', previewEnded);
+            currentPreviewAudio.removeEventListener('error', handleAudioError);
+
+            currentPreviewAudio.addEventListener('ended', previewEnded);
+            currentPreviewAudio.addEventListener('error', (e) => handleAudioError(e, `Preview Track ${index + 1}`));
+            
+            statusEl.textContent = `Track ${index + 1} をプレビュー中...`;
+            console.log(`Playing Preview ${index + 1} (URL: ${url})`);
+            
+            currentPreviewAudio.play().catch(e => {
+                console.error(`Playback error (Preview ${index + 1}):`, e.message);
+                statusEl.textContent = `再生エラー (Preview)`;
+            });
+        }
+
+        function previewEnded() {
+            statusEl.textContent = "プレビュー終了";
+            currentPreviewAudio = null;
+        }
+
+        // 再生ボタン（シーケンス）のロジック
         function playSequence() {
+            // 他の音（プレビューなど）をすべて停止
             stopAllAudio(); 
             
             currentSequence = [
-                { audio: audioA, url: A_URL, name: "A" },
+                { audio: audioA, url: A_URL, name: "A (i.wav)" },
                 { audio: audioMain, url: TRACK_URLS[selectedTrackIndex], name: "Main" },
-                { audio: audioB, url: B_URL, name: "B" }
+                { audio: audioB, url: B_URL, name: "B (i.wav)" }
             ];
             
             playNextInSequence();
@@ -165,51 +207,32 @@
             if (currentSequence.length === 0) {
                 console.log("Sequence finished");
                 statusEl.textContent = "再生終了";
-                currentAudio = null;
+                currentPlayingAudio = null;
                 return;
             }
 
             const next = currentSequence.shift();
-            currentAudio = next.audio;
+            currentPlayingAudio = next.audio;
 
-            currentAudio.removeEventListener('ended', playNextInSequence);
-            currentAudio.removeEventListener('error', handleAudioError);
+            currentPlayingAudio.removeEventListener('ended', playNextInSequence);
+            currentPlayingAudio.removeEventListener('error', handleAudioError);
             
-            currentAudio.src = next.url;
+            currentPlayingAudio.src = next.url;
             
-            currentAudio.addEventListener('ended', playNextInSequence);
-            currentAudio.addEventListener('error', (e) => handleAudioError(e, next.name));
+            currentPlayingAudio.addEventListener('ended', playNextInSequence);
+            currentPlayingAudio.addEventListener('error', (e) => handleAudioError(e, next.name));
 
             statusEl.textContent = `${next.name === 'Main' ? 'Track ' + (selectedTrackIndex + 1) : next.name} を再生中...`;
             console.log(`Playing ${next.name} (URL: ${next.url})`);
             
-            currentAudio.play().catch(e => {
+            currentPlayingAudio.play().catch(e => {
                 console.error(`Playback error (${next.name}):`, e.message);
                 statusEl.textContent = `再生エラー (${next.name})`;
-                playNextInSequence();
+                playNextInSequence(); // エラーが起きても次のシーケンスに進む
             });
         }
 
+        // エラーハンドリング
         function handleAudioError(e, name) {
             console.error(`Audio Playback Error (${name}):`, e);
-            statusEl.textContent = `エラー (${name}): ファイル読込失敗`;
-            playNextInSequence();
-        }
-
-        function stopAllAudio() {
-            [audioA, audioB, audioMain].forEach(audio => {
-                if (audio) {
-                    audio.pause();
-                    audio.currentTime = 0;
-                    audio.removeEventListener('ended', playNextInSequence);
-                    audio.removeEventListener('error', handleAudioError);
-                }
-            });
-            currentSequence = []; 
-            currentAudio = null;
-            statusEl.textContent = "停止しました";
-            console.log("All audio stopped");
-        }
-    </script>
-</body>
-</html>
+            statusEl
