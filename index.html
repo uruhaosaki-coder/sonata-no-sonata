@@ -20,6 +20,25 @@
             border: 4px solid #fde68a;
             font-weight: bold;
         }
+
+        /* ふりがな(ruby)スタイル */
+        /* ★修正★ display:flex を削除し、ブラウザ標準のルビ表示(上に表示)に戻す */
+        .track-button ruby {
+            /* display: flex; */
+            /* flex-direction: column; */
+            line-height: 1.2; /* 行間を詰める */
+            -webkit-ruby-position: over;
+            ruby-position: over;
+        }
+        .track-button rt {
+            font-size: 0.7rem; /* ふりがなサイズ */
+            font-weight: normal; /* ふりがなは太字にしない */
+            color: #374151; /* 少し薄い文字色 */
+        }
+        /* 選択中のふりがなの色 */
+        .track-button.selected rt {
+             color: #1B2A5C;
+        }
     </style>
 </head>
 <!-- 背景を #717071 (グレー) に変更 -->
@@ -36,9 +55,9 @@
         <!-- トラック選択ボタン (8曲・4列) -->
         <div id="button-container" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 w-full">
             <template id="track-button-template">
-                <!-- Trackボタン: 白背景(bg-white)、青文字(text-[#1B2A5C]) -->
-                <button class="track-button text-[#1B2A5C] font-bold py-4 px-2 rounded-lg bg-white hover:bg-gray-100 transition-all duration-200 shadow-md text-sm border-4 border-transparent min-h-[60px]">
-                    Track
+                <!-- min-h-[70px] と py-2 でふりがな用の高さを確保 -->
+                <button class="track-button text-[#1B2A5C] font-bold py-2 px-1 rounded-lg bg-white hover:bg-gray-100 transition-all duration-200 shadow-md text-sm border-4 border-transparent min-h-[70px] flex items-center justify-center">
+                    <!-- この中身(innerHTML)はJavaScriptによって <ruby>... に置き換えられます -->
                 </button>
             </template>
         </div>
@@ -76,26 +95,19 @@
         // ! このまま「プレビュー」しても "ファイルが見つからない" エラーになります。
         
         // 再生開始/終了時に鳴る音 (i.wav)
-        const A_URL = "wide_25-11_music_2-09i_2846_モーツアルト_交響曲40番_(trim).mp3";
-        const B_URL = "wide_25-11_music_2-09i_2846_モーツアルト_交響曲40番_(trim).mp3";
+        const A_URL = "i.wav";
+        const B_URL = "i.wav";
 
-        // 選択する8種類の音トラック (曲名)
-        const TRACK_NAMES = [
-            "運命", "冬", "月の光", "G線上のアリア",
-            "カノン", "歓喜の歌", "モルダウ", "新世界より"
-        ];
-        
-        // 選択する8種類の音トラック (ファイル名)
-        const TRACK_URLS = [
-             "wide_25-11_music_2-09a_audiostock_871154_運命サビ_(trim)(inBb).mp3", // Track 1
-            "wide_25-11_music_2-09b_audiostock_1531685四季冬_(trim)(inBb).mp3", // Track 2
-            "wide_25-11_music_2-09c_audiostock_931505_ドビュッシー_「月の光」原曲ピアノソロ_(trim)(inBb).mp3", // Track 3
-            "wide_25-11_music_2-09d_audiostock_821545_バッハ_G線上のアリア_(trim)(inBb).mp3", // Track 4
-            "wide_25-11_music_2-09e_Pachelbel-Canon-in-D-2019-AR_サウンドライブラリー_パッヘルベル_カノン_(trim)(inBb).mp3", // Track 5
-            "wide_25-11_music_2-09f_audiostock_147191_ベートーヴェン_第九より歓喜の歌_(trim)(inBb).mp3", // Track 6
-            "wide_25-11_music_2-09g_audiostock_1251719_スメタナ_響詩 「モルダウ」（わが祖国より）_(trim)(inBb).mp3", // Track 7
-            "wide_25-11_music_2-09h_audiostock_1262384_ドヴォルザーク_「新世界より」第4楽章_(trim)(inBb).mp3"  // Track 8
-
+        // 選択する8種類の音トラック (曲名とふりがな)
+        const TRACK_DATA = [
+            { name: "運命", ruby: "うんめい", file: "a.wav" },
+            { name: "冬", ruby: "ふゆ", file: "b.wav" },
+            { name: "月の光", ruby: "つきのひかり", file: "c.wav" },
+            { name: "G線上のアリア", ruby: "じーせんじょうのありあ", file: "d.wav" },
+            { name: "カノン", ruby: "かのん", file: "e.wav" },
+            { name: "歓喜の歌", ruby: "かんきのうた", file: "f.wav" },
+            { name: "モルダウ", ruby: "もるだう", file: "g.wav" },
+            { name: "新世界より", ruby: "しんせかいより", file: "h.wav" }
         ];
         // --- ▲ 音源設定 ▲ ---
 
@@ -125,11 +137,12 @@
 
         // トラックボタンを生成
         if (template && buttonContainer) {
-            TRACK_NAMES.forEach((name, index) => {
+            TRACK_DATA.forEach((track, index) => {
                 const clone = template.content.cloneNode(true);
                 const button = clone.querySelector('.track-button');
                 
-                button.textContent = name; // 曲名を表示
+                // ★ふりがな(ruby)タグを挿入★
+                button.innerHTML = `<ruby>${track.name}<rt>${track.ruby}</rt></ruby>`;
                 button.dataset.index = index; 
 
                 button.addEventListener('click', () => {
@@ -169,7 +182,7 @@
             stopAllAudio(false); // メッセージは更新しない
 
             // プレビュー再生
-            audioPreview.src = TRACK_URLS[index];
+            audioPreview.src = TRACK_DATA[index].file; // TRACK_DATA からファイル名を取得
             audioPreview.currentTime = 0;
             
             audioPreview.play().catch(e => {
@@ -177,7 +190,7 @@
                 statusEl.textContent = `エラー (プレビュー): 読込失敗`;
             });
             
-            statusEl.textContent = `${TRACK_NAMES[index]} をプレビュー中...`;
+            statusEl.textContent = `${TRACK_DATA[index].name} をプレビュー中...`;
             isPreviewPlaying = true;
         }
 
@@ -193,12 +206,12 @@
             
             const urls = [
                 A_URL,
-                TRACK_URLS[selectedTrackIndex],
+                TRACK_DATA[selectedTrackIndex].file, // TRACK_DATA からファイル名を取得
                 B_URL
             ];
             const names = [
                 "i.wav",
-                TRACK_NAMES[selectedTrackIndex],
+                TRACK_DATA[selectedTrackIndex].name, // TRACK_DATA から曲名を取得
                 "i.wav"
             ];
 
