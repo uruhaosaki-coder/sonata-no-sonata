@@ -75,21 +75,21 @@
         // ! これは正常な動作です。
 
         // 再生開始時に鳴る音 (i.wav に変更)
-        const A_URL = "wide_25-11_music_2-09i_2846_モーツアルト_交響曲40番_(trim).mp3";
+        const A_URL = "i.wav";
 
         // 再生終了時に鳴る音 (i.wav に変更)
-        const B_URL = "wide_25-11_music_2-09i_2846_モーツアルト_交響曲40番_(trim).mp3";
+        const B_URL = "i.wav";
 
         // 選択する8種類の音トラック (a.wav ~ h.wav に変更)
         const TRACK_URLS = [
-            "wide_25-11_music_2-09a_audiostock_871154_運命サビ_(trim)(inBb).mp3", // Track 1
-            "wide_25-11_music_2-09b_audiostock_1531685四季冬_(trim)(inBb).mp3", // Track 2
-            "wide_25-11_music_2-09c_audiostock_931505_ドビュッシー_「月の光」原曲ピアノソロ_(trim)(inBb).mp3", // Track 3
-            "wide_25-11_music_2-09d_audiostock_821545_バッハ_G線上のアリア_(trim)(inBb).mp3", // Track 4
-            "wide_25-11_music_2-09e_Pachelbel-Canon-in-D-2019-AR_サウンドライブラリー_パッヘルベル_カノン_(trim)(inBb).mp3", // Track 5
-            "wide_25-11_music_2-09f_audiostock_147191_ベートーヴェン_第九より歓喜の歌_(trim)(inBb).mp3", // Track 6
-            "wide_25-11_music_2-09g_audiostock_1251719_スメタナ_響詩 「モルダウ」（わが祖国より）_(trim)(inBb).mp3", // Track 7
-            "wide_25-11_music_2-09h_audiostock_1262384_ドヴォルザーク_「新世界より」第4楽章_(trim)(inBb).mp3"  // Track 8
+            "a.wav", // Track 1
+            "b.wav", // Track 2
+            "c.wav", // Track 3
+            "d.wav", // Track 4
+            "e.wav", // Track 5
+            "f.wav", // Track 6
+            "g.wav", // Track 7
+            "h.wav"  // Track 8
         ];
 
         // ▼ ボタンに表示する曲名 (8曲) ▼
@@ -112,8 +112,9 @@
         const audioMain = new Audio(); // シーケンス再生用
         const audioPreview = new Audio(); // プレビュー再生専用
         
-        let currentSequence = []; // 再生シーケンスのキュー
-        let currentPlayingAudio = null; // 現在再生中のAudioオブジェクト (シーケンス用)
+        // ▼ 削除 (新しいロジックでは不要)
+        // let currentSequence = []; 
+        // let currentPlayingAudio = null;
         let currentPreviewAudio = null; // 現在プレビュー中のAudioオブジェクト
 
         // DOM要素
@@ -217,74 +218,90 @@
             currentPreviewAudio = null;
         }
 
-        // 再生ボタン（シーケンス）のロジック
+        // ▼ 修正: 再生ボタン（シーケンス）のロジック
         function playSequence() {
             // 他の音（プレビューなど）をすべて停止
             stopAllAudio(); 
-            
-            currentSequence = [
-                { audio: audioA, url: A_URL, name: "A (i.wav)" },
-                { audio: audioMain, url: TRACK_URLS[selectedTrackIndex], name: "Main" },
-                { audio: audioB, url: B_URL, name: "B (i.wav)" }
-            ];
-            
-            playNextInSequence();
-        }
 
-        function playNextInSequence() {
-            if (currentSequence.length === 0) {
-                console.log("Sequence finished");
+            // 1. 再生するURLを取得
+            const urlA = A_URL;
+            const urlMain = TRACK_URLS[selectedTrackIndex];
+            const urlB = B_URL;
+            const mainTrackName = TRACK_NAMES[selectedTrackIndex];
+
+            // 2. すべてのAudioオブジェクトにsrcを設定 (ブラウザが先読みを開始できます)
+            audioA.src = urlA;
+            audioMain.src = urlMain;
+            audioB.src = urlB;
+
+            // 3. 古いイベントリスナーをすべてクリア
+            audioA.onended = null;
+            audioMain.onended = null;
+            audioB.onended = null;
+            audioA.onerror = null;
+            audioMain.onerror = null;
+            audioB.onerror = null;
+
+            // 4. 再生を「リレー式」につなげる
+            
+            // A (i.wav) が終わったら
+            audioA.onended = () => {
+                statusEl.textContent = `${mainTrackName} を再生中...`;
+                console.log(`Playing Main (URL: ${urlMain})`);
+                audioMain.play().catch(e => handlePlaybackError(e, mainTrackName));
+            };
+
+            // Main (選択トラック) が終わったら
+            audioMain.onended = () => {
+                statusEl.textContent = `B (i.wav) を再生中...`;
+                console.log(`Playing B (URL: ${urlB})`);
+                audioB.play().catch(e => handlePlaybackError(e, "B (i.wav)"));
+            };
+
+            // B (i.wav) が終わったら
+            audioB.onended = () => {
                 statusEl.textContent = "再生終了";
-                currentPlayingAudio = null;
-                return;
-            }
+                console.log("Sequence finished");
+            };
 
-            const next = currentSequence.shift();
-            currentPlayingAudio = next.audio;
+            // 5. 各オーディオのエラーハンドリング
+            audioA.onerror = (e) => handlePlaybackError(e, "A (i.wav)");
+            audioMain.onerror = (e) => handlePlaybackError(e, mainTrackName);
+            audioB.onerror = (e) => handlePlaybackError(e, "B (i.wav)");
 
-            currentPlayingAudio.removeEventListener('ended', playNextInSequence);
-            currentPlayingAudio.removeEventListener('error', handleAudioError);
-            
-            currentPlayingAudio.src = next.url;
-            
-            currentPlayingAudio.addEventListener('ended', playNextInSequence);
-            currentPlayingAudio.addEventListener('error', (e) => handleAudioError(e, next.name));
-
-            // ▼ メイン再生時のステータス表示も曲名に変更 ▼
-            const displayName = next.name === 'Main' ? TRACK_NAMES[selectedTrackIndex] : next.name;
-            statusEl.textContent = `${displayName} を再生中...`;
-            console.log(`Playing ${next.name} (URL: ${next.url})`);
-            
-            currentPlayingAudio.play().catch(e => {
-                console.error(`Playback error (${next.name}):`, e.message);
-                statusEl.textContent = `再生エラー (${next.name})`;
-                playNextInSequence(); // エラーが起きても次のシーケンスに進む
-            });
+            // 6. 最初のA (i.wav) の再生を開始
+            statusEl.textContent = "A (i.wav) を再生中...";
+            console.log(`Playing A (URL: ${urlA})`);
+            audioA.play().catch(e => handlePlaybackError(e, "A (i.wav)"));
         }
 
-        // エラーハンドリング
-        function handleAudioError(e, name) {
-            console.error(`Audio Playback Error (${name}):`, e);
-            statusEl.textContent = `エラー (${name}): ファイル読込失敗`;
-            // シーケンス再生中のエラーなら、次のシーケンスに進む
-            if (name.startsWith('A') || name.startsWith('Main') || name.startsWith('B') || name.startsWith('Preview')) {
-                playNextInSequence();
-            }
-        }
+        // ▼ 削除 (古いシーケンスロジック)
+        // function playNextInSequence() { ... }
 
-        // 停止ボタン（すべて停止）のロジック
-        function stopAllAudio(isPreviewStop = false) {
+        // ▼ 修正: エラーハンドリング (シーケンス全体を停止させる)
+        function handlePlaybackError(e, name) {
+            console.error(`Playback error (${name}):`, e.message);
+            statusEl.textContent = `再生エラー (${name})`;
+            stopAllAudio(true); // エラー発生時はすべてを停止
+        }
+        
+        // ▼ 削除 (古いエラーハンドラ)
+        // function handleAudioError(e, name) { ... }
+
+
+        // ▼ 修正: 停止ボタン（すべて停止）のロジック
+        function stopAllAudio(isErrorStop = false, isPreviewStop = false) {
             // シーケンス再生を停止
             [audioA, audioB, audioMain].forEach(audio => {
                 if (audio) {
                     audio.pause();
                     audio.currentTime = 0;
-                    audio.removeEventListener('ended', playNextInSequence);
-                    audio.removeEventListener('error', handleAudioError);
+                    // ▼ 修正: チェーンされたイベントをクリア
+                    audio.onended = null; 
+                    audio.onerror = null;
                 }
             });
-            currentSequence = []; 
-            currentPlayingAudio = null;
+            // (currentSequence, currentPlayingAudio は削除済み)
 
             // プレビュー再生を停止
             if (audioPreview) {
@@ -295,7 +312,9 @@
             }
             currentPreviewAudio = null;
             
-            if (!isPreviewStop) { // プレビュー停止（内部呼び出し）の時はメッセージを変えない
+            if (isErrorStop) {
+                // エラーメッセージを上書きしない
+            } else if (!isPreviewStop) { // プレビュー停止（内部呼び出し）の時はメッセージを変えない
                 statusEl.textContent = "停止しました";
             }
             console.log("All audio stopped");
