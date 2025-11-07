@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- タイトル変更 -->
     <title>そなたのソナタ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -12,25 +13,12 @@
         }
         
         /* 選択中のボタンスタイル (通常のCSS) */
+        /* !important を追加して、Tailwindの bg-white より優先させる */
         .track-button.selected {
-            background-color: #D3C34A; /* 黄色 */
-            color: #1B2A5C;            /* 濃い青文字 */
-            border: 4px solid #fde68a; /* ring-yellow-200 の代わり */
+            background-color: #D3C34A !important; /* 黄色 */
+            color: #1B2A5C !important;           /* 濃い青文字 */
+            border: 4px solid #fde68a;
             font-weight: bold;
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
-        }
-
-        /* ボタンの文字サイズを自動調整 */
-        .track-button {
-            /* 1行で表示し、はみ出たら ... に */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            /* 文字サイズを少し小さくして長い曲名に対応 */
-            font-size: 0.8rem; /* 14px -> 12.8px */
         }
     </style>
 </head>
@@ -39,83 +27,87 @@
 
     <!-- カードの背景色を #1B2A5C (濃い青) に変更 -->
     <div class="w-full max-w-2xl bg-[#1B2A5C] rounded-lg shadow-xl p-6">
-        <!-- タイトルの文字色を #D3C34A (黄色) に変更 -->
-        <h1 class="text-2xl font-bold text-center text-[#D3C34A] mb-6">そなたのソナタ</h1>
+        
+        <!-- タイトル「①きみ の ピンチ に あった きょく を さがそう！」 -->
+        <h1 class="text-2xl font-bold text-center text-[#D3C34A] mb-4">
+            ①きみ の ピンチ に あった きょく を さがそう！
+        </h1>
 
-        <!-- トラック選択ボタン (8曲用にレイアウト変更) -->
-        <div id="button-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6 w-full">
+        <!-- トラック選択ボタン (8曲・4列) -->
+        <div id="button-container" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 w-full">
             <template id="track-button-template">
                 <!-- Trackボタン: 白背景(bg-white)、青文字(text-[#1B2A5C]) -->
-                <button class="track-button text-[#1B2A5C] font-bold py-4 px-2 rounded-lg bg-white hover:bg-gray-100 transition-all duration-200 shadow-md border-4 border-transparent">
+                <button class="track-button text-[#1B2A5C] font-bold py-4 px-2 rounded-lg bg-white hover:bg-gray-100 transition-all duration-200 shadow-md text-sm border-4 border-transparent min-h-[60px]">
                     Track
                 </button>
             </template>
         </div>
 
+        <!-- 案内文「②えらんだら、さいせい ボタン を おして きいてみよう！」 -->
+        <h2 class="text-xl font-bold text-center text-[#D3C34A] mb-6">
+            ②えらんだら、さいせい ボタン を おして きいてみよう！
+        </h2>
+
         <!-- 操作ボタン -->
         <div class="flex space-x-4">
-            <!-- ボタンの文字を「決まったらココをクリック！」に変更 -->
-            <button id="play-button" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-lg text-lg shadow-lg transition duration-300">
-                決まったらココをクリック！
+            <!-- さいせいボタンの色とテキストを変更 -->
+            <button id="play-button" class="flex-1 bg-[#9AB700] hover:bg-opacity-80 text-white font-bold py-4 px-6 rounded-lg text-lg shadow-lg transition duration-300">
+                さいせい
             </button>
-            <button id="stop-button" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-6 rounded-lg text-lg shadow-lg transition duration-300">
-                停止
+            <!-- とめるボタンの色とテキストを変更 -->
+            <button id="stop-button" class="flex-1 bg-[#AC220D] hover:bg-opacity-80 text-white font-bold py-4 px-6 rounded-lg text-lg shadow-lg transition duration-300">
+                とめる
             </button>
         </div>
 
         <!-- ステータス表示 (明るいグレー) -->
         <div id="status" class="text-center text-gray-300 mt-4 h-6"></div>
+
+        <!-- コピーライト追加 -->
+        <footer class="text-center text-gray-400 text-xs mt-6">
+            ©︎ 探究学舎
+        </footer>
     </div>
 
     <script>
-        // --- ▼ 音源設定 (GitHub Pagesアップロード用) ▼ ---
+        // --- ▼ 音源設定 (8トラック・wav・i.wav) ▼ ---
         
         // !【重要】このファイルは GitHub Pages にアップロードするためのものです。
-        // ! このまま「プレビュー」しても "ファイルが見つからない" というエラーになりますが、
-        // ! これは正常な動作です。
-
-        // 再生開始時に鳴る音 (i.wav に変更)
+        // ! このまま「プレビュー」しても "ファイルが見つからない" エラーになります。
+        
+        // 再生開始/終了時に鳴る音 (i.wav)
         const A_URL = "i.wav";
-
-        // 再生終了時に鳴る音 (i.wav に変更)
         const B_URL = "i.wav";
 
-        // 選択する8種類の音トラック (a.wav ~ h.wav に変更)
-        const TRACK_URLS = [
-            "a.wav", // Track 1
-            "b.wav", // Track 2
-            "c.wav", // Track 3
-            "d.wav", // Track 4
-            "e.wav", // Track 5
-            "f.wav", // Track 6
-            "g.wav", // Track 7
-            "h.wav"  // Track 8
-        ];
-
-        // ▼ ボタンに表示する曲名 (8曲) ▼
+        // 選択する8種類の音トラック (曲名)
         const TRACK_NAMES = [
-            "運命",
-            "冬",
-            "月の光",
-            "G線上のアリア",
-            "カノン",
-            "歓喜の歌",
-            "モルダウ",
-            "新世界より"
+            "運命", "冬", "月の光", "G線上のアリア",
+            "カノン", "歓喜の歌", "モルダウ", "新世界より"
+        ];
+        
+        // 選択する8種類の音トラック (ファイル名)
+        const TRACK_URLS = [
+            "a.wav", // 運命
+            "b.wav", // 冬
+            "c.wav", // 月の光
+            "d.wav", // G線上のアリア
+            "e.wav", // カノン
+            "f.wav", // 歓喜の歌
+            "g.wav", // モルダウ
+            "h.wav"  // 新世界より
         ];
         // --- ▲ 音源設定 ▲ ---
 
 
-        // Audioオブジェクトのインスタンス (使い回します)
+        // Audioオブジェクトのインスタンス
         const audioA = new Audio();
         const audioB = new Audio();
-        const audioMain = new Audio(); // シーケンス再生用
-        const audioPreview = new Audio(); // プレビュー再生専用
+        const audioMain = new Audio();
+        const audioPreview = new Audio(); // プレビュー再生用
         
-        // ▼ 削除 (新しいロジックでは不要)
-        // let currentSequence = []; 
-        // let currentPlayingAudio = null;
-        let currentPreviewAudio = null; // 現在プレビュー中のAudioオブジェクト
+        let currentSequencePlayers = [audioA, audioMain, audioB];
+        let currentSequenceIndex = 0; // シーケンス再生のインデックス
+        let isSequencePlaying = false; // シーケンス再生中フラグ
 
         // DOM要素
         const buttonContainer = document.getElementById('button-container');
@@ -126,23 +118,24 @@
 
         let selectedTrackIndex = 0; // デフォルトでTrack 1 (インデックス 0) を選択
         let trackButtons = []; // ボタンの参照を保持する配列
+        let isPreviewPlaying = false; // プレビュー再生中フラグ
 
         // --- 初期化 ---
-        
-        // このif文は、<template> タグが正しく読み込まれたか確認するためのものです
+
+        // トラックボタンを生成
         if (template && buttonContainer) {
-            // トラックボタンを生成
-            TRACK_URLS.forEach((url, index) => {
+            TRACK_NAMES.forEach((name, index) => {
                 const clone = template.content.cloneNode(true);
                 const button = clone.querySelector('.track-button');
                 
-                // ▼ 曲名を表示するように変更 ▼
-                // TRACK_NAMES配列に曲名があればそれを使い、なければ元の "Track X" を使う
-                button.textContent = TRACK_NAMES[index] || `Track ${index + 1}`;
+                button.textContent = name; // 曲名を表示
                 button.dataset.index = index; 
 
                 button.addEventListener('click', () => {
-                    // トラックボタンクリックでプレビュー再生
+                    // ★スマホ対応修正★
+                    // 1. まず色を変える（軽い処理）
+                    updateButtonSelection(index);
+                    // 2. 次に音を再生する（重い処理）
                     playPreview(index);
                 });
 
@@ -155,170 +148,136 @@
         }
 
 
-        // トラックの選択状態（色）だけを更新する
+        // トラック選択処理 (色を変えるだけ)
         function updateButtonSelection(index) {
             selectedTrackIndex = index;
             trackButtons.forEach((btn, i) => {
-                // 'selected' クラス (黄色の背景) の付け外し
                 btn.classList.toggle('selected', i === index);
             });
+            // console.log(`Button selection updated to ${index}`);
         }
         
-        // 起動時にデフォルト（Track 1）を選択状態にする (音は鳴らさない)
-        // trackButtonsが正しく生成された場合のみ実行
-        if (trackButtons.length > 0) {
-            updateButtonSelection(0);
-        }
+        // 起動時にデフォルト（Track 1）を選択状態にする
+        updateButtonSelection(0);
 
 
-        // --- 再生ロジック ---
-
-        playButton.addEventListener('click', playSequence);
-        stopButton.addEventListener('click', stopAllAudio);
-
-        // トラックボタン（プレビュー）のロジック
+        // --- プレビュー再生ロジック ---
         function playPreview(index) {
-            // まずは選択状態（色）を更新
-            updateButtonSelection(index);
+            // console.log(`Play preview for index ${index}`);
+            // まずシーケンス再生を止める
+            stopAllAudio(false); // メッセージは更新しない
 
-            // もし同じトラックがすでにプレビュー再生中なら、停止する
-            if (currentPreviewAudio && currentPreviewAudio.dataset.index == index && !currentPreviewAudio.paused) {
-                currentPreviewAudio.pause();
-                currentPreviewAudio.currentTime = 0;
-                currentPreviewAudio = null;
-                statusEl.textContent = `${TRACK_NAMES[index]} プレビュー停止`;
-                return;
-            }
-
-            // 他の音（シーケンスまたはプレビュー）をすべて停止
-            stopAllAudio(true); // true = プレビュー停止中であることを示す
-
-            const url = TRACK_URLS[index];
-            currentPreviewAudio = audioPreview; // プレビュー用のAudioオブジェクトを使用
-            currentPreviewAudio.src = url;
-            currentPreviewAudio.dataset.index = index; // どのトラックか記録
-
-            currentPreviewAudio.removeEventListener('ended', previewEnded);
-            currentPreviewAudio.removeEventListener('error', handleAudioError);
-
-            currentPreviewAudio.addEventListener('ended', previewEnded);
-            currentPreviewAudio.addEventListener('error', (e) => handleAudioError(e, `Preview ${TRACK_NAMES[index]}`));
+            // プレビュー再生
+            audioPreview.src = TRACK_URLS[index];
+            audioPreview.currentTime = 0;
+            
+            audioPreview.play().catch(e => {
+                console.error(`Preview Playback error:`, e.message);
+                statusEl.textContent = `エラー (プレビュー): 読込失敗`;
+            });
             
             statusEl.textContent = `${TRACK_NAMES[index]} をプレビュー中...`;
-            console.log(`Playing Preview ${TRACK_NAMES[index]} (URL: ${url})`);
+            isPreviewPlaying = true;
+        }
+
+        // --- シーケンス再生ロジック (ギャップレス版) ---
+        playButton.addEventListener('click', startSequence);
+        stopButton.addEventListener('click', () => stopAllAudio(true)); // メッセージを更新する
+
+        // 1. 「さいせい」ボタンが押された時の処理
+        function startSequence() {
+            stopAllAudio(false); // まず全ての音を止める
+            isSequencePlaying = true;
+            currentSequenceIndex = 0;
             
-            currentPreviewAudio.play().catch(e => {
-                console.error(`Playback error (Preview ${TRACK_NAMES[index]}):`, e.message);
-                statusEl.textContent = `再生エラー (Preview)`;
-            });
-        }
+            const urls = [
+                A_URL,
+                TRACK_URLS[selectedTrackIndex],
+                B_URL
+            ];
+            const names = [
+                "i.wav",
+                TRACK_NAMES[selectedTrackIndex],
+                "i.wav"
+            ];
 
-        function previewEnded() {
-            statusEl.textContent = "プレビュー終了";
-            currentPreviewAudio = null;
-        }
+            // 3つのプレイヤーを準備
+            currentSequencePlayers.forEach((player, index) => {
+                player.src = urls[index];
+                player.dataset.name = names[index]; // デバッグ用に名前を保持
 
-        // ▼ 修正: 再生ボタン（シーケンス）のロジック
-        function playSequence() {
-            // 他の音（プレビューなど）をすべて停止
-            stopAllAudio(); 
-
-            // 1. 再生するURLを取得
-            const urlA = A_URL;
-            const urlMain = TRACK_URLS[selectedTrackIndex];
-            const urlB = B_URL;
-            const mainTrackName = TRACK_NAMES[selectedTrackIndex];
-
-            // 2. すべてのAudioオブジェクトにsrcを設定 (ブラウザが先読みを開始できます)
-            audioA.src = urlA;
-            audioMain.src = urlMain;
-            audioB.src = urlB;
-
-            // 3. 古いイベントリスナーをすべてクリア
-            audioA.onended = null;
-            audioMain.onended = null;
-            audioB.onended = null;
-            audioA.onerror = null;
-            audioMain.onerror = null;
-            audioB.onerror = null;
-
-            // 4. 再生を「リレー式」につなげる
-            
-            // A (i.wav) が終わったら
-            audioA.onended = () => {
-                statusEl.textContent = `${mainTrackName} を再生中...`;
-                console.log(`Playing Main (URL: ${urlMain})`);
-                audioMain.play().catch(e => handlePlaybackError(e, mainTrackName));
-            };
-
-            // Main (選択トラック) が終わったら
-            audioMain.onended = () => {
-                statusEl.textContent = `B (i.wav) を再生中...`;
-                console.log(`Playing B (URL: ${urlB})`);
-                audioB.play().catch(e => handlePlaybackError(e, "B (i.wav)"));
-            };
-
-            // B (i.wav) が終わったら
-            audioB.onended = () => {
-                statusEl.textContent = "再生終了";
-                console.log("Sequence finished");
-            };
-
-            // 5. 各オーディオのエラーハンドリング
-            audioA.onerror = (e) => handlePlaybackError(e, "A (i.wav)");
-            audioMain.onerror = (e) => handlePlaybackError(e, mainTrackName);
-            audioB.onerror = (e) => handlePlaybackError(e, "B (i.wav)");
-
-            // 6. 最初のA (i.wav) の再生を開始
-            statusEl.textContent = "A (i.wav) を再生中...";
-            console.log(`Playing A (URL: ${urlA})`);
-            audioA.play().catch(e => handlePlaybackError(e, "A (i.wav)"));
-        }
-
-        // ▼ 削除 (古いシーケンスロジック)
-        // function playNextInSequence() { ... }
-
-        // ▼ 修正: エラーハンドリング (シーケンス全体を停止させる)
-        function handlePlaybackError(e, name) {
-            console.error(`Playback error (${name}):`, e.message);
-            statusEl.textContent = `再生エラー (${name})`;
-            stopAllAudio(true); // エラー発生時はすべてを停止
-        }
-        
-        // ▼ 削除 (古いエラーハンドラ)
-        // function handleAudioError(e, name) { ... }
-
-
-        // ▼ 修正: 停止ボタン（すべて停止）のロジック
-        function stopAllAudio(isErrorStop = false, isPreviewStop = false) {
-            // シーケンス再生を停止
-            [audioA, audioB, audioMain].forEach(audio => {
-                if (audio) {
-                    audio.pause();
-                    audio.currentTime = 0;
-                    // ▼ 修正: チェーンされたイベントをクリア
-                    audio.onended = null; 
-                    audio.onerror = null;
+                // 最後のプレイヤー以外は、再生終了時に次のプレイヤーを呼ぶ
+                if (index < currentSequencePlayers.length - 1) {
+                    player.onended = () => {
+                        if (isSequencePlaying) {
+                            playNextInSequence(index + 1);
+                        }
+                    };
+                } else {
+                    // 最後のプレイヤー
+                    player.onended = () => {
+                        statusEl.textContent = "さいせい しゅうりょう";
+                        isSequencePlaying = false;
+                    };
                 }
+                
+                player.onerror = (e) => {
+                    handleAudioError(e, player.dataset.name);
+                };
             });
-            // (currentSequence, currentPlayingAudio は削除済み)
+
+            // 最初のプレイヤーの再生を開始
+            playNextInSequence(0);
+        }
+
+        // 2. 次の音を再生する処理
+        function playNextInSequence(index) {
+            if (!isSequencePlaying || index >= currentSequencePlayers.length) {
+                return; // 停止ボタンが押されたか、シーケンスが終了した
+            }
+            
+            const player = currentSequencePlayers[index];
+            const name = player.dataset.name;
+            
+            statusEl.textContent = `${name} を さいせい中...`;
+            console.log(`Playing ${name} (URL: ${player.src})`);
+
+            player.currentTime = 0; // 念のため頭出し
+            player.play().catch(e => {
+                handleAudioError(e, name);
+            });
+        }
+
+        // 3. エラーハンドリング
+        function handleAudioError(e, name) {
+            console.error(`Audio Playback Error (${name}):`, e);
+            statusEl.textContent = `エラー (${name}): ファイル読込失敗`;
+            stopAllAudio(false); // エラーが起きたら全停止
+        }
+
+        // 4. 「とめる」ボタンの処理
+        function stopAllAudio(updateStatus) {
+            // console.log("Stopping all audio");
+            
+            // シーケンス再生を停止
+            isSequencePlaying = false;
+            currentSequencePlayers.forEach(player => {
+                player.pause();
+                player.currentTime = 0;
+                player.onended = null; // 予約解除
+                player.onerror = null;
+            });
 
             // プレビュー再生を停止
-            if (audioPreview) {
-                audioPreview.pause();
-                audioPreview.currentTime = 0;
-                audioPreview.removeEventListener('ended', previewEnded);
-                audioPreview.removeEventListener('error', handleAudioError);
+            isPreviewPlaying = false;
+            audioPreview.pause();
+            audioPreview.currentTime = 0;
+
+            if (updateStatus) {
+                statusEl.textContent = "とめました";
             }
-            currentPreviewAudio = null;
-            
-            if (isErrorStop) {
-                // エラーメッセージを上書きしない
-            } else if (!isPreviewStop) { // プレビュー停止（内部呼び出し）の時はメッセージを変えない
-                statusEl.textContent = "停止しました";
-            }
-            console.log("All audio stopped");
         }
+        
     </script>
 </body>
 </html>
