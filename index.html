@@ -89,25 +89,26 @@
     </div>
 
     <script>
-        // --- ▼ 音源設定 (8トラック・wav・i.wav) ▼ ---
+        document.addEventListener('DOMContentLoaded', () => {
+        // --- ▼ 音源設定（8トラック・MP3・前後ジングル） ▼ ---
         
         // !【重要】このファイルは GitHub Pages にアップロードするためのものです。
         // ! このまま「プレビュー」しても "ファイルが見つからない" エラーになります。
         
-        // 再生開始/終了時に鳴る音 (i.wav)
-        const A_URL = "wide_25-11_music_2-09i_2846_kokyokyoku40_(trim).mp3";
-        const B_URL = "wide_25-11_music_2-09i_2846_kokyokyoku40_(trim).mp3";
+        // 再生開始/終了時に鳴るジングル（実体は MP3）
+        const A_URL = "wide_25-11_music_2-09i_2846_kokyokyoku40_trim.mp3";
+        const B_URL = "wide_25-11_music_2-09i_2846_kokyokyoku40_trim.mp3";
 
         // 選択する8種類の音トラック (曲名とふりがな)
         const TRACK_DATA = [
-            { name: "運命", ruby: "うんめい", file: "wide_25-11_music_2-09a_audiostock_871154_unmei_(trim)(inBb).mp3" },
-            { name: "冬", ruby: "ふゆ", file: "wide_25-11_music_2-09b_audiostock_1531685_fuyu_(trim)(inBb).mp3" },
-            { name: "月の光", ruby: "つきのひかり", file: "wide_25-11_music_2-09c_audiostock_931505_tsukinohikari_(trim)(inBb).mp3" },
-            { name: "G線上のアリア", ruby: "じーせんじょうのありあ", file: "wide_25-11_music_2-09d_audiostock_821545_gsenjonoaria_(trim)(inBb).mp3" },
-            { name: "カノン", ruby: "かのん", file: "wide_25-11_music_2-09e_Pachelbel-Canon-in-D-2019-AR_canon_(trim)(inBb).mp3" },
-            { name: "歓喜の歌", ruby: "かんきのうた", file: "wide_25-11_music_2-09f_audiostock_147191_kankinouta_(trim)(inBb).mp3" },
-            { name: "モルダウ", ruby: "もるだう", file: "wide_25-11_music_2-09g_audiostock_1251719_morudau_(trim)(inBb).mp3" },
-            { name: "新世界より", ruby: "しんせかいより", file: "wide_25-11_music_2-09h_audiostock_1262384_shinsekai_(trim)(inBb).mp3" }
+            { name: "運命", ruby: "うんめい", file: "wide_25-11_music_2-09a_audiostock_871154_unmei_triminBb.mp3" },
+            { name: "冬", ruby: "ふゆ", file: "wide_25-11_music_2-09b_audiostock_1531685_fuyu_triminBb.mp3" },
+            { name: "月の光", ruby: "つきのひかり", file: "wide_25-11_music_2-09c_audiostock_931505_tsukinohikari_triminBb.mp3" },
+            { name: "G線上のアリア", ruby: "じーせんじょうのありあ", file: "wide_25-11_music_2-09d_audiostock_821545_gsenjonoaria_triminBb.mp3" },
+            { name: "カノン", ruby: "かのん", file: "wide_25-11_music_2-09e_Pachelbel-Canon-in-D-2019-AR_canon_triminBb.mp3" },
+            { name: "歓喜の歌", ruby: "かんきのうた", file: "wide_25-11_music_2-09f_audiostock_147191_kankinouta_triminBb.mp3" },
+            { name: "モルダウ", ruby: "もるだう", file: "wide_25-11_music_2-09g_audiostock_1251719_morudau_triminBb.mp3" },
+            { name: "新世界より", ruby: "しんせかいより", file: "wide_25-11_music_2-09h_audiostock_1262384_shinsekai_triminBb.mp3" }
         ];
         // --- ▲ 音源設定 ▲ ---
 
@@ -117,6 +118,21 @@
         const audioB = new Audio();
         const audioMain = new Audio();
         const audioPreview = new Audio(); // プレビュー再生用
+
+        // ▼ 互換性向上：事前読み込みと CORS を明示
+        ;[audioA, audioB, audioMain, audioPreview].forEach(a => {
+            a.preload = 'auto';
+            a.crossOrigin = 'anonymous';
+        });
+
+        // ▼ GitHub Pages などでルート配下以外に置く場合のベースパス
+        // 例: const BASE_PATH = '/sonata/';
+        const BASE_PATH = '';
+        const buildURL = (file) => {
+            // ファイル名に () などの記号があるため念のためエンコード
+            // すでにエンコード済みの部分は encodeURI が壊さない
+            return BASE_PATH + encodeURI(file);
+        };
         
         let currentSequencePlayers = [audioA, audioMain, audioB];
         let currentSequenceIndex = 0; // シーケンス再生のインデックス
@@ -134,62 +150,76 @@
         let isPreviewPlaying = false; // プレビュー再生中フラグ
 
         // --- 初期化 ---
+        try {
+            // トラックボタンを生成
+            if (template && buttonContainer) {
+                TRACK_DATA.forEach((track, index) => {
+                    const clone = template.content ? template.content.cloneNode(true) : null;
+                    let button;
+                    if (clone) {
+                        button = clone.querySelector('.track-button');
+                    } else {
+                        // ▼ template 未対応・無効環境のフォールバック
+                        button = document.createElement('button');
+                        button.className = 'track-button text-[#1B2A5C] font-bold py-2 px-1 rounded-lg bg-white hover:bg-gray-100 transition-all duration-200 shadow-md text-sm border-4 border-transparent min-h-[70px] flex items-center justify-center';
+                    }
 
-        // トラックボタンを生成
-        if (template && buttonContainer) {
-            TRACK_DATA.forEach((track, index) => {
-                const clone = template.content.cloneNode(true);
-                const button = clone.querySelector('.track-button');
-                
-                // ★ふりがな(ruby)タグを挿入★
-                button.innerHTML = `<ruby>${track.name}<rt>${track.ruby}</rt></ruby>`;
-                button.dataset.index = index; 
+                    // ふりがな(ruby)タグを挿入
+                    button.innerHTML = `<ruby>${track.name}<rt>${track.ruby}</rt></ruby>`;
+                    button.dataset.index = index;
+                    
+                    button.addEventListener('click', () => {
+                        updateButtonSelection(index);
+                        playPreview(index);
+                    });
 
-                button.addEventListener('click', () => {
-                    // ★スマホ対応修正★
-                    // 1. まず色を変える（軽い処理）
-                    updateButtonSelection(index);
-                    // 2. 次に音を再生する（重い処理）
-                    playPreview(index);
+                    if (clone) {
+                        buttonContainer.appendChild(clone);
+                    } else {
+                        buttonContainer.appendChild(button);
+                    }
+                    trackButtons.push(button);
                 });
-
-                buttonContainer.appendChild(clone);
-                trackButtons.push(button); 
-            });
-        } else {
-            console.error("初期化エラー: button-container または track-button-template が見つかりません。");
-            statusEl.textContent = "ボタンの初期化に失敗しました";
+            } else {
+                throw new Error('button-container または track-button-template が見つかりません');
+            }
+        } catch (err) {
+            console.error('初期化エラー:', err);
+            statusEl.textContent = '初期化エラー：ボタン生成に失敗しました';
         }
 
-
-        // トラック選択処理 (色を変えるだけ)
-        function updateButtonSelection(index) {
-            selectedTrackIndex = index;
-            trackButtons.forEach((btn, i) => {
-                btn.classList.toggle('selected', i === index);
-            });
-            // console.log(`Button selection updated to ${index}`);
-        }
-        
         // 起動時にデフォルト（Track 1）を選択状態にする
-        updateButtonSelection(0);
+        if (trackButtons.length > 0) {
+            updateButtonSelection(0);
+        }
 
 
         // --- プレビュー再生ロジック ---
         function playPreview(index) {
-            // console.log(`Play preview for index ${index}`);
             // まずシーケンス再生を止める
-            stopAllAudio(false); // メッセージは更新しない
+            stopAllAudio(false);
 
-            // プレビュー再生
-            audioPreview.src = TRACK_DATA[index].file; // TRACK_DATA からファイル名を取得
+            // プレビュー用に読み込み→再生（canplaythrough を待って安定化）
+            audioPreview.src = buildURL(TRACK_DATA[index].file);
             audioPreview.currentTime = 0;
-            
-            audioPreview.play().catch(e => {
-                console.error(`Preview Playback error:`, e.message);
-                statusEl.textContent = `エラー (プレビュー): 読込失敗`;
-            });
-            
+            let played = false;
+            const tryPlay = () => {
+                if (played) return;
+                played = true;
+                audioPreview.play().catch(e => {
+                    console.error('Preview Playback error:', e?.message || e);
+                    statusEl.textContent = 'エラー (プレビュー): 読込失敗';
+                });
+            };
+            const once = () => {
+                audioPreview.removeEventListener('canplaythrough', once);
+                tryPlay();
+            };
+            audioPreview.addEventListener('canplaythrough', once);
+            // ネットワーク次第で canplaythrough が来ない環境向けフォールバック
+            setTimeout(tryPlay, 500);
+            audioPreview.load();
+
             statusEl.textContent = `${TRACK_DATA[index].name} をプレビュー中...`;
             isPreviewPlaying = true;
         }
@@ -217,7 +247,7 @@
 
             // 3つのプレイヤーを準備
             currentSequencePlayers.forEach((player, index) => {
-                player.src = urls[index];
+                player.src = buildURL(urls[index]);
                 player.dataset.name = names[index]; // デバッグ用に名前を保持
 
                 // 最後のプレイヤー以外は、再生終了時に次のプレイヤーを呼ぶ
@@ -292,6 +322,7 @@
             }
         }
         
+        }); // DOMContentLoaded
     </script>
 </body>
 </html>
