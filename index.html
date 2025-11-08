@@ -16,16 +16,13 @@
         /* !important を追加して、Tailwindの bg-white より優先させる */
         .track-button.selected {
             background-color: #D3C34A !important; /* 黄色 */
-            color: #1B2A5C !important;           /* 濃い青文字 */
+            color: #1B2A5C !important;       /* 濃い青文字 */
             border: 4px solid #fde68a;
             font-weight: bold;
         }
 
         /* ふりがな(ruby)スタイル */
-        /* ★修正★ display:flex を削除し、ブラウザ標準のルビ表示(上に表示)に戻す */
         .track-button ruby {
-            /* display: flex; */
-            /* flex-direction: column; */
             line-height: 1.2; /* 行間を詰める */
             -webkit-ruby-position: over;
             ruby-position: over;
@@ -96,19 +93,19 @@
         // ! このまま「プレビュー」しても "ファイルが見つからない" エラーになります。
         
         // 再生開始/終了時に鳴るジングル（実体は MP3）
-        const A_URL = "wide_25-11_music_2-09i_2846_kokyokyoku40_trim.mp3";
-        const B_URL = "wide_25-11_music_2-09i_2846_kokyokyoku40_trim.mp3";
+        const A_URL = "wide_2511_music_209i_2846_kokyokyoku40_trim.mp3";
+        const B_URL = "wide_2511_music_209i_2846_kokyokyoku40_trim.mp3";
 
         // 選択する8種類の音トラック (曲名とふりがな)
         const TRACK_DATA = [
-            { name: "運命", ruby: "うんめい", file: "wide_25-11_music_2-09a_audiostock_871154_unmei_triminBb.mp3" },
-            { name: "冬", ruby: "ふゆ", file: "wide_25-11_music_2-09b_audiostock_1531685_fuyu_triminBb.mp3" },
-            { name: "月の光", ruby: "つきのひかり", file: "wide_25-11_music_2-09c_audiostock_931505_tsukinohikari_triminBb.mp3" },
-            { name: "G線上のアリア", ruby: "じーせんじょうのありあ", file: "wide_25-11_music_2-09d_audiostock_821545_gsenjonoaria_triminBb.mp3" },
-            { name: "カノン", ruby: "かのん", file: "wide_25-11_music_2-09e_Pachelbel-Canon-in-D-2019-AR_canon_triminBb.mp3" },
-            { name: "歓喜の歌", ruby: "かんきのうた", file: "wide_25-11_music_2-09f_audiostock_147191_kankinouta_triminBb.mp3" },
-            { name: "モルダウ", ruby: "もるだう", file: "wide_25-11_music_2-09g_audiostock_1251719_morudau_triminBb.mp3" },
-            { name: "新世界より", ruby: "しんせかいより", file: "wide_25-11_music_2-09h_audiostock_1262384_shinsekai_triminBb.mp3" }
+            { name: "運命", ruby: "うんめい", file: "wide_2511_music_209a_audiostock_871154_unmei_triminBb.mp3" },
+            { name: "冬", ruby: "ふゆ", file: "wide_2511_music_209b_audiostock_1531685_fuyu_triminBb.mp3" },
+            { name: "月の光", ruby: "つきのひかり", file: "wide_2511_music_209c_audiostock_931505_tsukinohikari_triminBb.mp3" },
+            { name: "G線上のアリア", ruby: "じーせんじょうのありあ", file: "wide_2511_music_209d_audiostock_821545_gsenjonoaria_triminBb.mp3" },
+            { name: "カノン", ruby: "かのん", file: "wide_2511_music_209e_PachelbelCanoninD2019AR_canon_triminBb.mp3" },
+            { name: "歓喜の歌", ruby: "かんきのうた", file: "wide_2511_music_209f_audiostock_147191_kankinouta_triminBb.mp3" },
+            { name: "モルダウ", ruby: "もるだう", file: "wide_2511_music_209g_audiostock_1251719_morudau_triminBb.mp3" },
+            { name: "新世界より", ruby: "しんせかいより", file: "wide_2511_music_209h_audiostock_1262384_shinsekai_triminBb.mp3" }
         ];
         // --- ▲ 音源設定 ▲ ---
 
@@ -190,8 +187,28 @@
 
         // 起動時にデフォルト（Track 1）を選択状態にする
         if (trackButtons.length > 0) {
-            updateButtonSelection(0);
+            // updateButtonSelection(0); // ★修正★ 起動時のデフォルト選択を無効化
         }
+
+        // --- ★★★ 修正箇所 ★★★ ---
+        // --- ボタン選択状態の更新ロジック ---
+        function updateButtonSelection(index) {
+            if (index < 0 || index >= trackButtons.length) return; // 範囲外チェック
+
+            selectedTrackIndex = index; // 現在選択中のインデックスを更新
+
+            // すべてのボタンの選択状態を解除
+            trackButtons.forEach((btn, i) => {
+                if (i === index) {
+                    // クリックされたボタンを選択状態にする
+                    btn.classList.add('selected');
+                } else {
+                    // それ以外のボタンの選択状態を解除する
+                    btn.classList.remove('selected');
+                }
+            });
+        }
+        // --- ★★★ 修正ここまで ★★★ ---
 
 
         // --- プレビュー再生ロジック ---
@@ -240,9 +257,9 @@
                 B_URL
             ];
             const names = [
-                "i.wav",
+                "i.wav", // ※コメントでは i.wav になっていますが、実体は A_URL です
                 TRACK_DATA[selectedTrackIndex].name, // TRACK_DATA から曲名を取得
-                "i.wav"
+                "i.wav"  // ※コメントでは i.wav になっていますが、実体は B_URL です
             ];
 
             // 3つのプレイヤーを準備
