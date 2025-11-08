@@ -256,10 +256,11 @@
                 TRACK_DATA[selectedTrackIndex].file, // TRACK_DATA からファイル名を取得
                 B_URL
             ];
+            // ★修正★ 再生中のメッセージを A, B, C (提示部, 展開部, 再現部) に変更
             const names = [
-                "i.wav", // ※コメントでは i.wav になっていますが、実体は A_URL です
-                TRACK_DATA[selectedTrackIndex].name, // TRACK_DATA から曲名を取得
-                "i.wav"  // ※コメントでは i.wav になっていますが、実体は B_URL です
+                "提示部（ていじぶ）を再生中", // A_URL
+                "展開部（てんかいぶ）を再生中", // TRACK_DATA
+                "再現部（さいげんぶ）を再生中"  // B_URL
             ];
 
             // 3つのプレイヤーを準備
@@ -300,7 +301,8 @@
             const player = currentSequencePlayers[index];
             const name = player.dataset.name;
             
-            statusEl.textContent = `${name} を さいせい中...`;
+            // ★修正★ statusEl.textContent = `${name} を さいせい中...`;
+            statusEl.textContent = name; // ご指定のメッセージをそのまま表示
             console.log(`Playing ${name} (URL: ${player.src})`);
 
             player.currentTime = 0; // 念のため頭出し
